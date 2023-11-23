@@ -32,9 +32,17 @@
             /* display: block; */
             /* margin: 0 auto; */
         }
-        td:nth-child(8) {
-            width: 30%;
+        td:nth-child(6), td:nth-child(7) {
+            width: 20%;
             white-space: nowrap;
+        }
+        .checkbox-column {
+            text-align: left;
+        }
+        .checkbox-label {
+            padding: 4px;
+            display: block;
+            margin-bottom: 5px;
         }
         footer {
             padding: 32px;
@@ -66,29 +74,32 @@
         <table class="table table-hover table-bordered">
             <thead>
                 <tr>
-                    <th>Sl. No.</th>
-                    <th>AST</th>
-                    <th>UTC</th>
-                    <th>Detector</th>
-                    <th>Binning</th>
+                    <th>Event</th>
+                    <th>AST (Time)</th>
+                    <th>UTC (Time)</th>
                     <th>ObsID</th>
                     <th>Orbit</th>
-                    <th>Plot</th>
+                    <th>Plot [CZTI, 1.0]</th>
+                    <th>Plot [VETO, 1.0]</th>
                     <th>Type</th>
                 </tr>
             </thead>
             <tbody>
                 {% for val in elem %}
                     <tr>
-                        <td>{{val['id']}}</td>
+                        <td>{{val['no']}}</td>
                         <td>{{val['ast']}}</td>
                         <td>{{val['utc']}}</td>
-                        <td>{{val['detector']}}</td>
-                        <td>{{val['binning']}}</td>
                         <td>{{val['obsid']}}</td>
                         <td>{{val['orbit']}}</td>
-                        <td><img src="{{val['plot']}}"></td>
-                        <td>{{val['type']}}</td>
+                        <td><img src="static/{{val['ast']}}/CZTI_{{val['ast']}}.png"></td>
+                        <td><img src="static/{{val['ast']}}/VETO_{{val['ast']}}.png"></td>
+                        <td class="checkbox-column">
+                            <label class="checkbox-label"><input type="checkbox"> GRB</label>
+                            <label class="checkbox-label"><input type="checkbox"> TGF</label>
+                            <label class="checkbox-label"><input type="checkbox"> Solar Flare</label>
+                            <label class="checkbox-label"><input type="checkbox"> False Trigger</label>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
