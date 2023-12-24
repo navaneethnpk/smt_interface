@@ -7,7 +7,7 @@ def sqladdrow(tlist):
 		conn = sqlite3.connect('smttriggers.db')
 		cursor = conn.cursor()
 		trigger_info = tlist
-		query = "INSERT INTO triggers (ast, utc, obsid, orbit) VALUES (?, ?, ?, ?);"
+		query = "INSERT INTO events (event_obsid, event_orbit, event_ast, event_utc) VALUES (?, ?, ?, ?);"
 		cursor.execute(query, trigger_info)
 		conn.commit()
 		status = True
@@ -21,23 +21,28 @@ def sqladdrow(tlist):
 # # Creating the table & database
 # conn = sqlite3.connect('smttriggers.db')
 # cursor = conn.cursor()
-# cursor.execute("""CREATE TABLE triggers (no INTEGER PRIMARY KEY AUTOINCREMENT, ast TEXT, utc TEXT, obsid TEXT, orbit TEXT, type TEXT)""")
+# cursor.execute("""CREATE TABLE events (event_id INTEGER PRIMARY KEY AUTOINCREMENT, event_obsid TEXT, event_orbit TEXT, event_ast TEXT, event_utc TEXT, event_type TEXT)""")
+
+# #Adding data to sqldb 
+# alldata = 'test_data.txt'
+# with open(alldata, 'r') as file:
+# 	lines = [line.strip() for line in file.readlines()]
+# datalist = []
+# for item in lines:
+# 	data = item.split(',')
+# 	datalist.append(data)
+
+# for item in datalist:
+# 	adddata = sqladdrow(item)
+# 	print(adddata)
 
 #Reading the table
 conn = sqlite3.connect('smttriggers.db')
 cursor = conn.cursor()
-query = "SELECT * FROM triggers;"
+query = "SELECT * FROM events;"
 cursor.execute(query)
 rows = cursor.fetchall()
 for row in rows:
 	print(row)
 cursor.close()
 conn.close()
-
-#Removing a row from the database table
-# row_id = 3
-# conn = sqlite3.connect('smttriggers.db')
-# cursor = conn.cursor()
-# query = "DELETE FROM triggers WHERE no = ?;"
-# cursor.execute(query, (row_id,))
-# conn.commit()

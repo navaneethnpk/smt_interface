@@ -1,17 +1,14 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, g, session
 import sqlite3
 
 app = Flask(__name__)
-
-# rows = [{'no':1, 'ast':'434248071.0','utc':'2023-10-06 00:27:50','obsid':'9000005870', 'orbit':'43373', 'type':''},
-#         {'no':2, 'ast':'438328242.0','utc':'2023-11-22 05:50:41','obsid':'9000005940', 'orbit':'44073', 'type':''},
-#         {'no':3, 'ast':'438361962.0','utc':'2023-11-22 15:12:41','obsid':'9000005940', 'orbit':'44078', 'type':''}]
+DATABASE = 'smttriggers.db'
 
 #Connect to the SQLite database
 def getdatadb():
-    conn = sqlite3.connect('smttriggers.db')
+    conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    query = "SELECT * FROM triggers;"
+    query = "SELECT * FROM events;"
     cursor.execute(query)
     dbrow = cursor.fetchall()
     columns = [desc[0] for desc in cursor.description]
@@ -25,10 +22,45 @@ def getdatadb():
     conn.close()
     return rowdata
 
-@app.route("/")
+# Update event type in the database
+def update_event_type(event_id, event_type):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    query = "UPDATE events SET event_type = ? WHERE event_id = ?;"
+    cursor.execute(query, (event_type, event_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+@app.route("/", methods=['GET', 'POST'])
 def hello_czti():
+    if request.method == 'POST':
+        event_id = request.form['event_id']
+        event_type = request.form['event_type']
+        update_event_type(event_id, event_type)
+    
     rows = getdatadb()
-    return render_template('home.html', elem=rows)
+    return render_template('index.html', elem=rows)
+
+@app.route("/grb")
+def grb_page():
+    rows = getdatadb()
+    return render_template('grb.html', elem=rows)
+
+@app.route("/tgf")
+def tgf_page():
+    rows = getdatadb()
+    return render_template('tgf.html', elem=rows)
+
+@app.route("/solar")
+def solar_page():
+    rows = getdatadb()
+    return render_template('solar.html', elem=rows)
+
+@app.route("/false")
+def false_page():
+    rows = getdatadb()
+    return render_template('false.html', elem=rows)
 
 if __name__ == '__main__':
     app.run(debug=True)

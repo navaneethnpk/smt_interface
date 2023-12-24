@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMT-Triggers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        h1 {
+            text-align: center;
+            padding: 34px;
+        }
+        nav {
+            margin: 16px 32px 64px 32px;
+            background-color: #1b263b;
+            color: white;
+            /* border-radius: 16px; */
+        }
+        h1 {
+            text-align: center;
+            padding: 10px 32px 2px 32px;
+            margin: 0;
+        }
+        .info-section {
+            display: flex;
+            padding: 16px;
+            margin: 0px 256px 0px 256px;
+            justify-content: space-between;
+        }
+        .button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            text-decoration: none;
+            color: #caf0f8;
+            background-color: #1b263b;
+            border: 1px solid #1d3557;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #1d3557;
+        }
+        .home-button {
+            font-weight: bold;
+            color: #00b4d8;
+        }
+        .table-responsive {
+            margin: 16px 32px 32px 32px;
+            text-align: center;
+        }
+        .table-responsive img {
+            width: 100%;
+            /* height: auto; */
+            /* display: block; */
+            /* margin: 0 auto; */
+        }
+        td:nth-child(6), td:nth-child(7), td:nth-child(8) {
+            width: 16%;
+            white-space: nowrap;
+        }
+        select {
+            padding: 4px;
+            color: black;
+            border: 1px solid #3F405C;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        option {
+            background-color: #1b263b;
+            color: #fff;
+        }
+        footer {
+            padding: 32px;
+            margin: 32px 32px 16px 32px;
+            /* border-radius: 16px; */
+            color: rgba(255, 255, 255, 0.644);
+            text-align: center;
+            background-color: #1b263b;
+        }
+        footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>CZTI SMT Triggers - False Events</h1>
+        <div class="info-section">
+            <a href="{{ url_for('hello_czti') }}" class="button home-button">HOME</a>
+            <a href="{{ url_for('grb_page') }}" class="button">GRB</a>
+            <a href="{{ url_for('tgf_page') }}" class="button">TGF</a>
+            <a href="{{ url_for('solar_page') }}" class="button">Solar Flare</a>
+            <a href="{{ url_for('false_page') }}" class="button">False Event</a>
+        </div>
+    </nav>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>AST (Time)</th>
+                    <th>UTC (Time)</th>
+                    <th>ObsID</th>
+                    <th>Orbit</th>
+                    <th>Plot [CZTI, 0.1]</th>
+                    <th>Plot [CZTI, 1.0]</th>
+                    <th>Plot [VETO, 1.0]</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for val in elem %}
+                    {% if val['event_type'] == 'False Event' %}
+                        <tr>
+                            <td>{{val['event_id']}}</td>
+                            <td>{{val['event_ast']}}</td>
+                            <td>{{val['event_utc']}}</td>
+                            <td>{{val['event_obsid'][20:30]}}</td>
+                            <td>{{val['event_orbit']}}</td>
+                            <td><img src="static/{{val['event_ast']}}/{{val['event_ast']}}_0.1_CZTI.png"></td>
+                            <td><img src="static/{{val['event_ast']}}/{{val['event_ast']}}_1.0_CZTI.png"></td>
+                            <td><img src="static/{{val['event_ast']}}/{{val['event_ast']}}_1.0_VETO.png"></td>
+                            <td>{{val['event_type']}}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <footer>
+        <p>&copy; 2023 CZTI, IUCAA</p>
+    </footer>
+</body>
+</html>
