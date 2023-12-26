@@ -64,8 +64,8 @@
             /* display: block; */
             /* margin: 0 auto; */
         }
-        td:nth-child(6), td:nth-child(7), td:nth-child(8) {
-            width: 16%;
+        td:nth-child(6), td:nth-child(7), td:nth-child(8), td:nth-child(9), td:nth-child(10) {
+            width: 14%;
             white-space: nowrap;
         }
         select {
@@ -115,7 +115,9 @@
                     <th>Orbit</th>
                     <th>Plot [CZTI, 0.1]</th>
                     <th>Plot [CZTI, 1.0]</th>
+                    <th>Plot [CZTI, 10.0]</th>
                     <th>Plot [VETO, 1.0]</th>
+                    <th>Plot [VETO, 10.0]</th>
                     <th>Type</th>
                 </tr>
             </thead>
@@ -125,11 +127,13 @@
                         <td>{{val['event_id']}}</td>
                         <td>{{val['event_ast']}}</td>
                         <td>{{val['event_utc']}}</td>
-                        <td>{{val['event_obsid'][20:30]}}</td>
+                        <td>{{val['event_obsid'][26:30]}}</td>
                         <td>{{val['event_orbit']}}</td>
-                        <td><img src="static/{{val['event_ast']}}/{{val['event_ast']}}_0.1_CZTI.png"></td>
-                        <td><img src="static/{{val['event_ast']}}/{{val['event_ast']}}_1.0_CZTI.png"></td>
-                        <td><img src="static/{{val['event_ast']}}/{{val['event_ast']}}_1.0_VETO.png"></td>
+                        <td><img class="plot-image" src="static/{{val['event_ast']}}/{{val['event_ast']}}_0.1_CZTI.png"></td>
+                        <td><img class="plot-image" src="static/{{val['event_ast']}}/{{val['event_ast']}}_1.0_CZTI.png"></td>
+                        <td><img class="plot-image" src="static/{{val['event_ast']}}/{{val['event_ast']}}_10.0_CZTI.png"></td>
+                        <td><img class="plot-image" src="static/{{val['event_ast']}}/{{val['event_ast']}}_1_VETO.png"></td>
+                        <td><img class="plot-image" src="static/{{val['event_ast']}}/{{val['event_ast']}}_10_VETO.png"></td>
                         <td>
                             <form method="POST" action="{{ url_for('hello_czti') }}">
                                 <input type="hidden" name="event_id" value="{{val['event_id']}}">
@@ -153,20 +157,29 @@
     <script>
         // JavaScript to remember and restore scroll position
         document.addEventListener('DOMContentLoaded', function() {
-            // Remember the initial scroll position
             var scrollPosition = window.scrollY;
-            // Restore the scroll position after the page is loaded
             var savedScrollPosition = sessionStorage.getItem('scrollPosition');
             if (savedScrollPosition !== null) {
                 window.scrollTo(0, savedScrollPosition);
             }
-            // Update the scroll position on scroll
             window.addEventListener('scroll', function() {
                 scrollPosition = window.scrollY;
             });
-            // Store the scroll position before leaving the page
             window.addEventListener('beforeunload', function() {
                 sessionStorage.setItem('scrollPosition', scrollPosition);
+            });
+        });
+
+        // Function to open a pop-up window with the image
+        function openPlotImage(imagePath) {
+            window.open(imagePath, 'Plot Image', 'width=800,height=600');
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var plotImages = document.querySelectorAll('.plot-image');
+            plotImages.forEach(function(image) {
+                image.addEventListener('click', function() {
+                    openPlotImage(image.src);
+                });
             });
         });
     </script>
