@@ -20,7 +20,7 @@
             padding: 34px;
         }
         nav {
-            margin: 16px 32px 64px 32px;
+            margin: 16px 32px 32px 32px;
             background-color: #1b263b;
             color: white;
             /* border-radius: 16px; */
@@ -53,6 +53,25 @@
         .home-button {
             font-weight: bold;
             color: #00b4d8;
+        }
+        .export-btn {
+            display: flex;
+            justify-content: flex-end;
+            margin: 0px 32px;
+        }
+        .e-button {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #1b263b;
+            background-color: white;
+            border: 1px solid #1d3557;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .e-button:hover {
+            color: #caf0f8;
+            background-color: #1d3557;
         }
         .table-responsive {
             margin: 16px 32px 32px 32px;
@@ -104,6 +123,9 @@
             <a href="{{ url_for('false_page') }}" class="button">False Event</a>
         </div>
     </nav>
+    <div class="export-btn">
+        <button id="exportCsvButton" class="e-button" onclick="exportTableToCsv('SMTEventsFALSE.csv')">Download Table</button>
+    </div>
     <div class="table-responsive">
         <table class="table table-hover table-bordered">
             <thead>
@@ -158,6 +180,29 @@
                 });
             });
         });
+
+        // Function to export table data to CSV
+        function exportTableToCsv(filename) {
+            var csv = [];
+            var rows = document.querySelectorAll("table tr");
+            for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll("td, th");
+                for (var j = 0; j < cols.length; j++) {
+                    if (j < 5 || j === cols.length - 1) {
+                        row.push(cols[j].innerText);
+                    }
+                }
+                csv.push(row.join(","));
+            }
+            var csvContent = "data:text/csv;charset=utf-8," + csv.join("\n");
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     </script>
 </body>
 </html>
