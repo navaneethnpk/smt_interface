@@ -10,14 +10,17 @@ def makeplots(triglist, evtpath, plotfolder):
         eobs, eorb, east, eutc = triglist[0], triglist[1], triglist[2], triglist[3]
         evtFile = fits.open(evtpath)
 
-        #Time windows
         ttime = float(east)
-        tmin = int(ttime - 100)
-        tmax =int(ttime + 100)
         quadLabel = ['A', 'B', 'C', 'D']
 
         cbin = [0.1, 1.0, 10.0]
         for tb in cbin:
+                if tb == 0.1:
+                        tmin, tmax = ttime - 50, ttime + 50
+                elif tb == 1.0:
+                        tmin, tmax = ttime - 150, ttime + 150
+                elif tb == 10.0:
+                        tmin, tmax = ttime - 500, ttime + 500
                 plt.figure(figsize=(8, 6))
                 for qd in range(4):
                         #Read & plot CZT data
@@ -39,6 +42,10 @@ def makeplots(triglist, evtpath, plotfolder):
 
         vbin = [int(1), int(10)] #Veto binning needs to be integer
         for tb in vbin:
+                if tb == 1:
+                        tmin, tmax = ttime - 150, ttime + 150
+                elif tb == 10:
+                        tmin, tmax = ttime - 500, ttime + 500
                 plt.figure(figsize=(8, 6))
                 for qd in range(4):
                         #Read & plot VETO data
@@ -84,7 +91,7 @@ for item in datalist:
                 if not os.path.exists(plotfolder):
                         os.makedirs(plotfolder)
                 makeplots(item, evtpath[0], plotfolder)
-                print('Plot created - {}'.format(item))
+                print('Plots created - {}'.format(item))
         else:
                 continue
 
